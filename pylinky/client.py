@@ -2,6 +2,7 @@ import base64
 import datetime
 import json
 
+import pytz
 import requests
 import simplejson
 from dateutil.relativedelta import relativedelta
@@ -148,7 +149,9 @@ class LinkyClient(object):
             periode = data.get("periode")
             if not periode:
                 return []
-            start_date = datetime.datetime.strptime(periode.get("dateDebut"), "%d/%m/%Y").date()
+            start_date = datetime.datetime.strptime(periode.get("dateDebut"), "%d/%m/%Y")
+            start_date = pytz.timezone('Europe/Paris').localize(start_date)
+            start_date = pytz.utc.normalize(start_date)
 
         # Calculate final start date using the "offset" attribute returned by the API
         inc = 1
